@@ -40,6 +40,9 @@ resource "azurerm_virtual_machine" "fgtvm" {
   vm_size               = "Standard_B1ms"
   network_interface_ids = [azurerm_network_interface.fgt_nic1.id,azurerm_network_interface.fgt_nic2.id]
   primary_network_interface_id = azurerm_network_interface.fgt_nic1.id
+  depends_on            = [
+    azurerm_storage_blob.vhd_file,
+    ]
   
   storage_os_disk {
     name               = azurerm_managed_disk.fgtdisk.name
