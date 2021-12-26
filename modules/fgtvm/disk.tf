@@ -9,7 +9,7 @@ resource "null_resource" "download" {
   provisioner "local-exec" {
       command = <<-EOT
          chmod +x ~/azlab/vhd.sh
-         (cd ~/azlab/ ; ./fgt.sh)
+         (cd ~/azlab/ ; ./vhd.sh)
     EOT
   }
 }
