@@ -52,5 +52,7 @@ resource "azurerm_managed_disk" "fgtdisk" {
   source_uri           =  azurerm_storage_blob.vhd_file.url
   storage_account_id   =  azurerm_storage_account.fgtsa.id
   create_option        = "Import"
-
+  depends_on = [
+    azurerm_storage_blob.vhd_file,
+  ]
 }
