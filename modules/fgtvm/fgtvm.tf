@@ -41,7 +41,7 @@ resource "azurerm_virtual_machine" "fgtvm" {
   network_interface_ids = [azurerm_network_interface.fgt_nic1.id,azurerm_network_interface.fgt_nic2.id]
   primary_network_interface_id = azurerm_network_interface.fgt_nic1.id
   depends_on            = [
-    azurerm_storage_blob.vhd_file,
+    azurerm_managed_disk.fgtdisk
     ]
   
   storage_os_disk {
