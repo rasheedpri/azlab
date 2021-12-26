@@ -42,6 +42,12 @@ resource "azurerm_storage_blob" "vhd_file" {
   ]
 }
 
+# Wait till vhd is copied
+
+resource "time_sleep" "wait_30_seconds" {
+  create_duration = "30s"
+}
+
 # Create Managed Disk from VHD file
 
 resource "azurerm_managed_disk" "fgtdisk" {
