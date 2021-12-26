@@ -1,6 +1,6 @@
 
 module "vnet" {
-  source              = "${var.source}/modules/vnet"
+  source              = "/home/cloud/azlab/modules/vnet"
   vnet_name           = var.vnet_name
   location            = var.location
   address_space       = var.address_space
@@ -8,7 +8,7 @@ module "vnet" {
 }
 
 module "subnet" {
-  source              = "${var.source}/modules/subnet"
+  source              = "/home/cloud/azlab/modules/subnet"
   count               = 2
   subnet_name         = format("S-%s", replace(element(var.address_prefixes, count.index), "/", "-"))
   resource_group_name = var.resource_group_name
@@ -20,7 +20,7 @@ module "subnet" {
 }
 
 module "fgtvm" {
-  source              = "${var.source}/modules/fgtvm"
+  source              = "/home/cloud/azlab/modules/fgtvm"
   fw_name             = var.fw_name
   location            = var.location
   resource_group_name = var.resource_group_name
