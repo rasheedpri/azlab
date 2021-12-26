@@ -16,7 +16,3 @@ variable "address_prefixes" {
 variable "fw_name" {
   default = "AZUVNLABFGT001"
 }
-
-variable "source"   {
-    default = "/home/cloud/azlab"
-}
