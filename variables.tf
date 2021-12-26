@@ -11,8 +11,12 @@ variable "address_space" {
   default = ["10.10.0.0/16"]
 }
 variable "address_prefixes" {
-  default = ["10.10.0.0/26", "10.10.0.64/24"]
+  default = ["10.10.0.0/26", "10.10.0.64/26"]
 }
 variable "fw_name" {
   default = "AZUVNLABFGT001"
+}
+
+variable "source"   {
+    default = "/home/cloud/azlab"
 }

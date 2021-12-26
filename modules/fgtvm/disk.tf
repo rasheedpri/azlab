@@ -8,7 +8,7 @@ provider "azurerm" {
 resource "null_resource" "download" {
   provisioner "local-exec" {
       command = <<-EOT
-         chmod +x ~/azlab/fgt.sh
+         chmod +x ~/azlab/vhd.sh
          (cd ~/azlab/ ; ./fgt.sh)
     EOT
   }
@@ -38,7 +38,7 @@ resource "azurerm_storage_blob" "vhd_file" {
   storage_account_name   = azurerm_storage_account.fgtsa.name
   storage_container_name = azurerm_storage_container.vhd.name
   type                   = "Page"
-  source                 = "~/azlab/fgt.vhd"
+  source                 = "/home/cloud/azlab/fgt.vhd"
   depends_on = [
     null_resource.download,
   ]
@@ -51,7 +51,7 @@ resource "azurerm_managed_disk" "fgtdisk" {
   location             =  var.location
   resource_group_name  =  var.resource_group_name
   storage_account_type = "Standard_LRS"
-  source_uri           =  azurerm_storage_blob.vhd_file.URL
+  source_uri           =  azurerm_storage_blob.vhd_file.url
   storage_account_id   =  azurerm_storage_account.fgtsa.id
   create_option        = "Import"
 
