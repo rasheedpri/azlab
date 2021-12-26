@@ -28,3 +28,33 @@ module "fgtvm" {
   nic2_subnet_id      = element(module.subnet.*.subnet_id, 1)
   storage_account_id  = module.fgtvm.storage_account_id
 }
+
+module  "nsgrule" {
+  source                      = "/home/cloud/azlab/modules/nsgrule"
+  count                       = "2"
+  name                        = "Allow_Any"
+  priority                    = "1001"
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = element(module.subnet.*.subnet_nsg_name, count.index)
+}
+
+module  "nsgrule" {
+  source                      = "/home/cloud/azlab/modules/nsgrule"
+  count                       = "2"
+  name                        = "Allow_Any"
+  priority                    = "1001"
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = element(module.subnet.*.subnet_nsg_name, count.index)
+}
