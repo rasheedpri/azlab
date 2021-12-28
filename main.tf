@@ -29,32 +29,32 @@ module "fgtvm" {
   storage_account_id  = module.fgtvm.storage_account_id
 }
 
-module  "nsgrule" {
-  source                      = "/home/cloud/azlab/modules/nsgrule"
+module  "nsgrule_in" {
+  source                      = "/home/cloud/azlab/modules/nsgrules"
   count                       = "2"
-  name                        = "Allow_Any"
-  priority                    = "100${count.index}"
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
+  name                        = element(var.nsgrule_in.*.name, count.index)
+  priority                    = element(var.nsgrule_in.*.priority, count.index)
+  direction                   = element(var.nsgrule_in.*.direction, count.index)
+  access                      = element(var.nsgrule_in.*.access, count.index)
+  protocol                    = element(var.nsgrule_in.*.protocol, count.index)
+  destination_port_ranges     = element(var.nsgrule_in.*.destination_port_ranges, count.index)
+  source_address_prefix       = element(var.nsgrule_in.*.source_address_prefix, count.index)
+  destination_address_prefix  = element(var.nsgrule_in.*.destination_address_prefix, count.index)
   resource_group_name         = var.resource_group_name
   network_security_group_name = element(module.subnet.*.subnet_nsg_name, count.index)
 }
 
-module  "nsgrule" {
-  source                      = "/home/cloud/azlab/modules/nsgrule"
+module  "nsgrule_outbnd" {
+  source                      = "/home/cloud/azlab/modules/nsgrules"
   count                       = "2"
-  name                        = "Allow_Any"
-  priority                    = "100${count.index}"
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
+  name                        = element(var.nsgrule_out.*.name, count.index)
+  priority                    = element(var.nsgrule_out.*.priority, count.index)
+  direction                   = element(var.nsgrule_out.*.direction, count.index)
+  access                      = element(var.nsgrule_out.*.access, count.index)
+  protocol                    = element(var.nsgrule_out.*.protocol, count.index)
+  destination_port_ranges     = element(var.nsgrule_out.*.destination_port_ranges, count.index)
+  source_address_prefix       = element(var.nsgrule_out.*.source_address_prefix, count.index)
+  destination_address_prefix  = element(var.nsgrule_out.*.destination_address_prefix, count.index)
   resource_group_name         = var.resource_group_name
   network_security_group_name = element(module.subnet.*.subnet_nsg_name, count.index)
 }
