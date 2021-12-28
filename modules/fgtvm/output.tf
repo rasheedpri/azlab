@@ -1,3 +1,3 @@
 output "storage_account_id" {
-    value = azurerm_storage_account.fgtsa 
+  value = azurerm_storage_account.fgtsa
 }

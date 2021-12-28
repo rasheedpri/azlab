@@ -7,7 +7,7 @@ provider "azurerm" {
 
 resource "null_resource" "download" {
   provisioner "local-exec" {
-      command = <<-EOT
+    command = <<-EOT
          chmod +x ~/azlab/vhd.sh
          (cd ~/azlab/ ; ./vhd.sh)
     EOT
@@ -52,11 +52,11 @@ resource "time_sleep" "wait_30_seconds" {
 
 resource "azurerm_managed_disk" "fgtdisk" {
   name                 = "${var.fw_name}-OS"
-  location             =  var.location
-  resource_group_name  =  var.resource_group_name
+  location             = var.location
+  resource_group_name  = var.resource_group_name
   storage_account_type = "Standard_LRS"
-  source_uri           =  azurerm_storage_blob.vhd_file.url
-  storage_account_id   =  azurerm_storage_account.fgtsa.id
+  source_uri           = azurerm_storage_blob.vhd_file.url
+  storage_account_id   = azurerm_storage_account.fgtsa.id
   create_option        = "Import"
   depends_on = [
     azurerm_storage_blob.vhd_file,
