@@ -74,10 +74,16 @@ resource "azurerm_virtual_machine" "fgtvm" {
   }
 }
 
+
+resource "time_sleep" "wait_180_seconds" {
+  create_duration = "180s"
+  depends_on = [azurerm_virtual_machine.fgtvm,]
+}
+
 # Generate bash script file
 
 resource "local_file" "bootstrap" {
-
+ depends_on = [time_sleep.wait_180_seconds,azurerm_virtual_machine.fgtvm,]
  filename = "/home/cloud/azlab/bootstrap.sh"
  content = <<EOF
 export fgt=${data.azurerm_public_ip.fgtpip.ip_address}
@@ -98,10 +104,19 @@ pwd=admin
 EOF
 }
 
-resource "time_sleep" "wait_180_seconds" {
-  create_duration = "180s"
-  depends_on = [azurerm_virtual_machine.fgtvm,]
+resource "local_file" "ansible_inventory" {
+ depends_on = [time_sleep.wait_180_seconds,azurerm_virtual_machine.fgtvm,]
+ filename = "/home/cloud/azlab/hosts"
+ content = <<EOF
+ 
+[fortigate]
+fortigate01 ansible_host=${data.azurerm_public_ip.fgtpip.ip_address} ansible_user="admin" ansible_password="admin"
+[fortigate:vars]
+ansible_network_os=fortinet.fortios.fortios
+
+EOF
 }
+
 
 resource "null_resource" "bootstrap" {
   depends_on = [time_sleep.wait_180_seconds,local_file.bootstrap,]
@@ -112,3 +127,14 @@ resource "null_resource" "bootstrap" {
     EOT
   }
 }
+
+resource "null_resource" "ansible_playbook" {
+  depends_on = [time_sleep.wait_180_seconds,local_file.ansible_inventory,]
+  provisioner "local-exec" {
+    command = <<-EOT
+        ansible-playbook -i hosts forti_config.yml
+    EOT
+  }
+}
+
+
