@@ -11,7 +11,8 @@ module "fgtvm" {
   location            = var.location
   resource_group_name = var.resource_group_name
   fw_name             = var.fw_name
-  address_prefixes    = var.address_prefixes
+  public_subnet       = var.public_subnet
+  private_subnet      = var.private_subnet
   vnet_name           = module.vnet.vnet_name
 }
 

@@ -46,6 +46,7 @@ resource "azurerm_storage_blob" "vhd_file" {
 
 resource "time_sleep" "wait_30_seconds" {
   create_duration = "30s"
+  depends_on = [azurerm_storage_blob.vhd_file,]
 }
 
 # Create Managed Disk from VHD file
@@ -59,6 +60,6 @@ resource "azurerm_managed_disk" "fgtdisk" {
   storage_account_id   = azurerm_storage_account.fgtsa.id
   create_option        = "Import"
   depends_on = [
-    azurerm_storage_blob.vhd_file,
+    azurerm_storage_blob.vhd_file,time_sleep.wait_30_seconds
   ]
 }

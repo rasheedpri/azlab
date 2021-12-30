@@ -8,19 +8,11 @@ variable "fw_name" {}
 
 # Subnet Variables
 variable "vnet_name" {}
-variable "address_prefixes" {}
-
+variable "public_subnet" {}
+variable "private_subnet" {}
 # NSG Rule Variables
 
-variable "nsgrule" {
-  default = [
-    {
-    direction = "Outbound" },
-    {
-      direction = "Inbound"
-    }
-  ]
-}
+
 
 
 
