@@ -1,0 +1,39 @@
+- hosts: fortigate
+  connection: httpapi
+  vars:
+   vdom: "root"
+   ansible_httpapi_use_ssl: no
+   ansible_httpapi_validate_certs: no
+   ansible_httpapi_port: 80
+  tasks:
+    - name: Configure global attributes.
+      fortinet.fortios.fortios_system_global:
+        vdom:  "{{ vdom }}"
+        system_global:
+            hostname: 'AZUVNLABFGT001'
+  tasks:
+    - name: fortios_firewall_policy
+      fortinet.fortios.fortios_firewall_policy:
+        vdom: "{{ vdom }}"
+        state: present
+        firewall_policy:
+          name: allow all
+          srcintf:
+            - name: port1
+          dstintf:
+            - name: port2
+          srcaddr:
+            - name: all
+          dstaddr:
+            - name: all
+          action: accept
+          policyid: 6
+          nat: disable
+          logtraffic: all
+          schedule: always
+          service:
+            - name: ALL
+
+          ssl_ssh_profile: certificate-inspection
+
+  
