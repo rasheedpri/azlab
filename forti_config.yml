@@ -45,7 +45,7 @@
             - name: WEB-SRV
           action: accept
           policyid: 2
-          nat: disable
+          nat: enable
           logtraffic: all
           schedule: always
           service:
@@ -153,7 +153,7 @@
             - name: WEB-SRV
           action: accept
           policyid: 2
-          nat: disable
+          nat: enable
           logtraffic: all
           schedule: always
           service:
