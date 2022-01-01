@@ -33,7 +33,7 @@ resource "azurerm_virtual_machine" "websrv" {
     computer_name  = var.vm_name
     admin_username = "azureuser"
     admin_password = "Mylab@1234$%"
-    custom_data    = file("apache-install.sh")
+    custom_data    = file("apache.sh")
   }
   os_profile_linux_config {
     disable_password_authentication = false

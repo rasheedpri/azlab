@@ -22,6 +22,7 @@ resource "azurerm_network_interface" "fgt_nic1" {
   name                = "${var.fw_name}-NIC1"
   location            = var.location
   resource_group_name = var.resource_group_name
+  enable_ip_forwarding= "true"
 
   ip_configuration {
     name                          = "${var.fw_name}-NIC1"
@@ -38,6 +39,7 @@ resource "azurerm_network_interface" "fgt_nic2" {
   name                = "${var.fw_name}-NIC2"
   location            = var.location
   resource_group_name = var.resource_group_name
+  enable_ip_forwarding= "true"
 
   ip_configuration {
     name                          = "${var.fw_name}-NIC2"
@@ -99,6 +101,9 @@ pwd=admin
   echo "edit port1";
   echo "set allowaccess https http ssh ping";
   echo "end";
+  echo "config system global";
+  echo "set admin-port 8080";
+  echo "end"
   echo "exit"
  } | ssh -o StrictHostKeyChecking=no admin@$fgt
 EOF
@@ -128,7 +133,7 @@ resource "null_resource" "bootstrap" {
   }
 }
 
-resource "null_resource" "ansible_playbook" {
+resource "null_resource" "ansible_playbook1" {
   depends_on = [time_sleep.wait_180_seconds,local_file.ansible_inventory,]
   provisioner "local-exec" {
     command = <<-EOT

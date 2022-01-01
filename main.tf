@@ -16,6 +16,7 @@ module "fgtvm" {
   vnet_name           = module.vnet.vnet_name
 }
 
+
 module "linuxvm"  {
   source = "/home/cloud/azlab/modules/linuxvm"
   location            = var.location
