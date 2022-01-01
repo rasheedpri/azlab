@@ -7,6 +7,7 @@ module "vnet" {
 }
 
 module "fgtvm" {
+  fw_count            = "2"
   source              = "/home/cloud/azlab/modules/fgtvm"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -15,7 +16,6 @@ module "fgtvm" {
   private_subnet      = var.private_subnet
   vnet_name           = module.vnet.vnet_name
 }
-
 
 module "linuxvm"  {
   source = "/home/cloud/azlab/modules/linuxvm"
@@ -26,3 +26,5 @@ module "linuxvm"  {
   vm_name             = "AZUVNLABWEB001"
   depends_on          = [module.fgtvm]
 }
+
+

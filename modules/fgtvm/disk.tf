@@ -52,7 +52,8 @@ resource "time_sleep" "wait_30_seconds" {
 # Create Managed Disk from VHD file
 
 resource "azurerm_managed_disk" "fgtdisk" {
-  name                 = "${var.fw_name}-OS"
+  count                = var.fw_count
+  name                 = format("%s-OS", element(var.fw_name,count.index))
   location             = var.location
   resource_group_name  = var.resource_group_name
   storage_account_type = "Standard_LRS"
