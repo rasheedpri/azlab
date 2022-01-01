@@ -97,7 +97,7 @@
         state: present
         router_static:
           device: port1
-          distance: 10
+          distance: 1
           dst: 0.0.0.0 0.0.0.0
           dynamic_gateway: disable
           gateway: 10.10.0.1
@@ -205,7 +205,7 @@
         state: present
         router_static:
           device: port1
-          distance: 10
+          distance: 1
           dst: 0.0.0.0 0.0.0.0
           dynamic_gateway: disable
           gateway: 10.10.0.1

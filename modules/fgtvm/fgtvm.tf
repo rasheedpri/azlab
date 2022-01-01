@@ -148,7 +148,7 @@ resource "null_resource" "bootstrap" {
 }
 
 
-resource "null_resource" "ansible_playbook" {
+resource "null_resource" "ansible_play" {
   count      = var.fw_count
   depends_on = [time_sleep.wait_180_seconds,local_file.ansible_inventory,]
   provisioner "local-exec" {
