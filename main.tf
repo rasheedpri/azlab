@@ -24,4 +24,5 @@ module "linuxvm"  {
   address_prefixes    = "10.10.0.128/26"
   vnet_name           = module.vnet.vnet_name
   vm_name             = "AZUVNLABWEB001"
+  depends_on          = [module.fgtvm]
 }
