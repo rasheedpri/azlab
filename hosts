@@ -1,7 +1,7 @@
  
 [fortigate]
-fortigate01 ansible_host=20.120.90.141 ansible_user="admin" ansible_password="admin"
-fortigate02 ansible_host=20.120.89.98 ansible_user="admin" ansible_password="admin"
+fortigate01 ansible_host=20.121.203.171 ansible_user="admin" ansible_password="admin"
+fortigate02 ansible_host=20.121.202.231 ansible_user="admin" ansible_password="admin"
 [fortigate:vars]
 ansible_network_os=fortinet.fortios.fortios
 

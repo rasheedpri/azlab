@@ -1,4 +1,4 @@
-export fgt=20.120.90.141
+export fgt=20.121.203.171
 user=admin
 pwd=admin
   echo "============================"

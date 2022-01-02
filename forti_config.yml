@@ -18,8 +18,7 @@
         vdom: "{{ vdom }}"
         state: present
         firewall_vip:
-          extintf: any
-          extip: 10.10.0.4
+          extintf: port1
           extport: '80'
           mappedip: 
             - range: 10.10.0.132-10.10.0.132
@@ -126,8 +125,7 @@
         vdom: "{{ vdom }}"
         state: present
         firewall_vip:
-          extintf: any
-          extip: 10.10.0.5
+          extintf: port1
           extport: '80'
           mappedip: 
             - range: 10.10.0.132-10.10.0.132
