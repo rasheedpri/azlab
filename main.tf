@@ -17,15 +17,14 @@ module "fgtvm" {
   vnet_name           = module.vnet.vnet_name
 }
 
-module "linuxvm"  {
+
+module "websrv"  {
   source = "/home/cloud/azlab/modules/linuxvm"
+  webvm_count         = "2"
   location            = var.location
   resource_group_name = var.resource_group_name
   address_prefixes    = "10.10.0.128/26"
   vnet_name           = module.vnet.vnet_name
-  vm_name             = "AZUVNLABWEB001"
+  vm_name             = "AZUVNLABWEB00"
   depends_on          = [module.fgtvm]
 }
-
-
-

@@ -21,7 +21,7 @@
           extintf: port1
           extport: '80'
           mappedip: 
-            - range: 10.10.0.132-10.10.0.132
+            - range: 10.10.0.140-10.10.0.140
           mappedport: '80'
           name: WEB-SRV
           portforward: enable
@@ -128,7 +128,7 @@
           extintf: port1
           extport: '80'
           mappedip: 
-            - range: 10.10.0.132-10.10.0.132
+            - range: 10.10.0.140-10.10.0.140
           mappedport: '80'
           name: WEB-SRV
           portforward: enable
