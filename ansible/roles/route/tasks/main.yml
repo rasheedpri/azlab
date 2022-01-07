@@ -1,0 +1,23 @@
+---
+# tasks file for fortigate static route
+
+- name: Cofigure_fortios_static_route
+  fortinet.fortios.fortios_router_static:
+    vdom: "{{ vdom }}"
+    state: present
+    router_static:
+      device: "{{ item.device }}"
+      # distance: 10
+      dst: "{{ item.dst }}"
+      dynamic_gateway: "{{ item.dyanmic_gateway }}"
+      gateway: "{{ item.gateway }}"
+      # priority: 0
+      # seq_num: 2
+      src: "{{ item.src }}"
+      status: enable
+  with_items: "{{ route }}"
+
+
+  # vars:
+  #   route:
+  #     - { device: port1, dst: 0.0.0.0/0, src: 10.10.0.0/16, dyanmic_gateway: enable, gateway: 10.10.0.1 }

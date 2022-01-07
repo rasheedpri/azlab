@@ -1,0 +1,19 @@
+- hosts: fortigate
+  connection: httpapi
+  vars:
+   vdom: "root"
+   ansible_httpapi_use_ssl: no
+   ansible_httpapi_validate_certs: no
+   ansible_httpapi_port: 8080
+  
+  roles:
+
+    - global
+
+    - vip
+
+    - route
+
+    - fwpolicy
+
+    - object

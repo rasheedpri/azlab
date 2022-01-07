@@ -1,0 +1,44 @@
+---
+# tasks file for object
+
+- name: Configure IPv4 addresses.
+  fortinet.fortios.fortios_firewall_address:
+    state: "present"
+    firewall_address:
+      allow_routing: "enable"
+      associated_interface: "{{ item.interface }}"
+      # cache_ttl: "5"
+      # color: "6"
+      #  comment: "Comment."
+      # country: "<your_own_value>"
+      # start_ip: "{{ item.start_ip}}"
+      # end_ip: "{{ item.end_ip}}"
+      # epg_name: "<your_own_value>"
+      # filter: "<your_own_value>"
+      # fqdn: "<your_own_value>"
+      # list:
+      #  -
+          # ip: "<your_own_value>"
+      name: "{{ item.name }}"
+      # obj_id: "<your_own_value>"
+      # organization: "<your_own_value>"
+      # policy_group: "<your_own_value>"
+      # sdn: "aci"
+      # sdn_tag: "<your_own_value>"
+      subnet: "{{ item.subnet }}"
+      # subnet_name: "<your_own_value>"
+      # tagging:
+      #  -
+      #     category: "<your_own_value> (source system.object-tagging.category)"
+      #     name: "default_name_26"
+      #     tags:
+      #      -
+      #         name: "default_name_28 (source system.object-tagging.tags.name)"
+      #  tenant: "<your_own_value>"
+      type: "ipmask"
+      # uuid: "<your_own_value>"
+      visibility: "enable"
+      # wildcard: "<your_own_value>"
+      # wildcard_fqdn: "<your_own_value>"
+  with_items: "{{ object }}"
+      # - { name: WEB-OBJ, interface: any, subnet: 10.10.0.128/26 }

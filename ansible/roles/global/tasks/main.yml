@@ -1,0 +1,8 @@
+---
+# Configure FortiGate Hostname
+
+- name: Configure FortiGate Hostname
+  fortinet.fortios.fortios_system_global:
+    vdom:  "{{ vdom }}"
+    system_global:
+      hostname: "{{ inventory_hostname }}"

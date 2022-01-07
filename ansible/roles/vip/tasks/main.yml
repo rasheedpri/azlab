@@ -1,0 +1,24 @@
+---
+# tasks file for configuring FortiGate VIP
+
+- name: Create_fortios_firewall_vip
+  fortinet.fortios.fortios_firewall_vip:
+    vdom: "{{ vdom }}"
+    state: present
+    firewall_vip:
+      extintf: "{{ item.extintf }}"
+      extip: "{{ item.extip }}"
+      extport: "{{item.port}}"
+      mappedip: 
+        - range: "{{ item.mappedip }}-{{ item.mappedip }}"
+      mappedport: "{{item.port}}"
+      name: "{{ item.name }}"
+      portforward: enable
+      portmapping_type: 1-to-1
+      protocol: tcp
+  with_items: "{{ vip }}"
+
+
+# vars:
+#   vip:
+#     - { name: WEB-SRV, mappedip: 10.10.0.140, port: 81, extip: 0.0.0.0, extintf: port1 }

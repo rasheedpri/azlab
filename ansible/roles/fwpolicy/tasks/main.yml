@@ -1,0 +1,28 @@
+---
+# tasks file for firewall wpolicy
+
+- name: fortios_firewall_policy
+  fortinet.fortios.fortios_firewall_policy:
+    vdom: "{{ vdom }}"
+    state: present
+    firewall_policy:
+      name: "{{ item.name}}"
+      srcintf:
+        - name: "{{ item.srcintf }}"
+      dstintf:
+        - name: "{{ item.dstintf }}"
+      srcaddr:
+        - name: "{{ item.srcaddr }}"
+      dstaddr:
+        - name: "{{ item.dstaddr }}"
+      action: "{{ item.action }}"
+      policyid: "{{ item.policyid }}"
+      nat: "{{ item.nat }}"
+      # logtraffic: all
+      schedule: always
+      service:
+        - name: "{{ item.service }}"
+      ssl_ssh_profile: certificate-inspection
+  with_items: "{{ fwpolicy }}"
+      # fwpolicy:
+      #   - { name: Allow_Inbound_WEB, srcintf: port1, dstintf: port2, srcaddr: all, dstaddr: WEB-SRV, action: allow, nat: enable, service: HTTP  }
