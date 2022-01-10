@@ -6,8 +6,8 @@ module "vnet" {
   resource_group_name = var.resource_group_name
 }
 
-module "fgtvm" {
-  fw_count            = "2"
+module "firewall" {
+  count               = "2"
   source              = "/home/cloud/azlab/modules/fgtvm"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -18,13 +18,15 @@ module "fgtvm" {
 }
 
 
-module "websrv"  {
-  source = "/home/cloud/azlab/modules/linuxvm"
-  webvm_count         = "2"
+module "websrv" {
+  source              = "/home/cloud/azlab/modules/linuxvm"
+  count               = "2"
   location            = var.location
   resource_group_name = var.resource_group_name
   address_prefixes    = "10.10.0.128/26"
   vnet_name           = module.vnet.vnet_name
   vm_name             = "AZUVNLABWEB00"
+  firewall_ip         =  module.firewall.firewall_ip
   depends_on          = [module.fgtvm]
+
 }

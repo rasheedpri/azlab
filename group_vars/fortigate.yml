@@ -7,8 +7,8 @@ route:
   - { device: port2, dst: 10.10.0.0/16, src: 0.0.0.0/0, dyanmic_gateway: disable, gateway: 10.10.0.65 }         
 
 fwpolicy:
-  - { name: Allow_Inbound_WEB, srcintf: port1, dstintf: port2, srcaddr: all, dstaddr: WEB-SRV, action: accept, nat: enable, service: ALL, policyid: 1  } 
-  - { name: Allow_Outbound_WebTier, srcintf: port2, dstintf: port1, srcaddr: all, dstaddr: all, action: accept, nat: enable, service: ALL, policyid: 2  } 
+  - { name: Allow_Inbound_WEB, srcintf: port1, dstintf: port2, srcaddr: all, dstaddr: WEB-SRV, action: accept, nat: enable, service: HTTP, policyid: 1  } 
+  - { name: Allow_Outbound_WebTier, srcintf: port2, dstintf: port1, srcaddr: WEB-SUBNET, dstaddr: all, action: accept, nat: enable, service: ALL, policyid: 2  } 
 
 object:
-  - { name: FW, interface: null, subnet: 10.10.0.64/26 }
+  - { name: WEB-SUBNET, interface: port2, subnet: 10.10.0.128/26 }

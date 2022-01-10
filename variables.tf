@@ -13,5 +13,5 @@ variable "private_subnet" {
 }
 
 variable "fw_name" {
-  default = ["AZUVNLABFGT001","AZUVNLABFGT002"]
+  default = ["AZUVNLABFGT001", "AZUVNLABFGT002"]
 }

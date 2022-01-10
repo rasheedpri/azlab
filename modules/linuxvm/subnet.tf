@@ -24,6 +24,8 @@ resource "azurerm_subnet_network_security_group_association" "nsg_attatch" {
   network_security_group_id = azurerm_network_security_group.subnet_nsg.id
 }
 
+# User Defined Route (UDR) to route Internet-Outbound traffic to FortiGate
+
 resource "azurerm_route_table" "udr" {
   name                          = "web-outbound"
   location                      = var.location
@@ -31,12 +33,14 @@ resource "azurerm_route_table" "udr" {
   disable_bgp_route_propagation = false
 
   route {
-    name           = "Internet"
-    address_prefix = "0.0.0.0/0"
-    next_hop_type  = "VirtualAppliance"
-    next_hop_in_ip_address = "10.10.0.68"
+    name                   = "Internet"
+    address_prefix         = "0.0.0.0/0"
+    next_hop_type          = "VirtualAppliance"
+    next_hop_in_ip_address = var.firewall_ip
   }
 }
+
+# UDR Association
 
 resource "azurerm_subnet_route_table_association" "udr_attach" {
   subnet_id      = azurerm_subnet.subnet.id
@@ -59,7 +63,7 @@ resource "azurerm_network_security_rule" "nsg_rule_out" {
   network_security_group_name = azurerm_network_security_group.subnet_nsg.name
 }
 
-resource "azurerm_network_security_rule" nsg_rule_in {
+resource "azurerm_network_security_rule" "nsg_rule_in" {
   name                        = "Allow_Inbound_Any"
   priority                    = 1001
   direction                   = "Inbound"

@@ -1,21 +1,6 @@
-# Generate bash script file
-
-resource "local_file" "apache_install" {
- count      = var.webvm_count
- filename = "/home/cloud/azlab/apache-install0${count.index + 1}.sh"
- content = <<EOF
-  #! /bin/bash
-  sudo apt-get update
-  sudo apt-get install -y apache2
-  sudo systemctl start apache2
-  sudo systemctl enable apache2
-  echo "<h1>Your Automation is Successfull - WEB-SRV-0${count.index + 1}</h1>" | sudo tee /var/www/html/index.html
-EOF
-}
-
 
 resource "azurerm_network_interface" "nic" {
-  count               = var.webvm_count
+  count               = var.count
   name                = "${var.vm_name}${count.index + 1}-NIC"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -27,14 +12,14 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_virtual_machine" "websrv" {
-  count                 = var.webvm_count
-  depends_on            = [local_file.apache_install,]  
-  name                  = "${var.vm_name}${count.index + 1}"
-  location              = var.location
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.nic[count.index].id]
-  vm_size               = "Standard_DS1_v2"
-
+  count                         = var.count
+  depends_on                    = [local_file.apache_install, ]
+  name                          = "${var.vm_name}${count.index + 1}"
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  network_interface_ids         = [azurerm_network_interface.nic[count.index].id]
+  vm_size                       = "Standard_DS1_v2"
+  delete_os_disk_on_termination = "true"
 
   storage_image_reference {
     publisher = "Canonical"
@@ -47,12 +32,19 @@ resource "azurerm_virtual_machine" "websrv" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
+
   }
   os_profile {
     computer_name  = "${var.vm_name}${count.index + 1}"
     admin_username = "azureuser"
     admin_password = "Mylab@1234$%"
-    custom_data    = file("apache-install0${count.index + 1}.sh")
+    custom_data    = <<EOF
+    
+    packages:
+        - apache2
+    runcmd:
+        - echo "<h1>Your Automation is Successfull - You are Connected to WEB-SRV-0${count.index + 1}</h1>" | sudo tee /var/www/html/index.html
+    EOF
   }
   os_profile_linux_config {
     disable_password_authentication = false
