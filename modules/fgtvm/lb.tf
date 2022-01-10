@@ -95,6 +95,9 @@ resource "azurerm_lb_rule" "fw_in_lb" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.fw_in_lb.id
   name                           = "FortiGateOutbound"
+  protocol                       = "ALL"
+  frontend_port                  = 0
+  backend_port                   = 0
   frontend_ip_configuration_name = "AZLAB-N-FGT-LB-02"
   probe_id                       = azurerm_lb_probe.fw_in_lb.id
   disable_outbound_snat          = "true"

@@ -27,6 +27,6 @@ module "websrv" {
   vnet_name           = module.vnet.vnet_name
   vm_name             = "AZUVNLABWEB00"
   firewall_ip         =  module.firewall.firewall_ip
-  depends_on          = [module.fgtvm]
+  depends_on          = [module.firewall]
 
 }

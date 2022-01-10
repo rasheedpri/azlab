@@ -111,6 +111,7 @@ pwd=admin
   echo "next"
   echo "edit port2";
   echo "set mode dhcp"
+  echo "set allowaccess ssh ping";
   echo "end";
   echo "config system global";
   echo "set admin-port 8080";
@@ -128,8 +129,8 @@ resource "local_file" "ansible_inventory" {
  content = <<EOF
  
 [fortigate]
-fortigate01 ansible_host=${element(data.azurerm_public_ip.fgtpip.*.ip_address,0)} ansible_user="admin" ansible_password="admin"
-fortigate02 ansible_host=${element(data.azurerm_public_ip.fgtpip.*.ip_address,1)} ansible_user="admin" ansible_password="admin"
+${element(var.fw_name,0)} ansible_host=${element(data.azurerm_public_ip.fgtpip.*.ip_address,0)} ansible_user="admin" ansible_password="admin"
+${element(var.fw_name,0)} ansible_host=${element(data.azurerm_public_ip.fgtpip.*.ip_address,1)} ansible_user="admin" ansible_password="admin"
 [fortigate:vars]
 ansible_network_os=fortinet.fortios.fortios
 
@@ -154,7 +155,7 @@ resource "null_resource" "ansible_play" {
   depends_on = [time_sleep.wait_180_seconds,local_file.ansible_inventory,]
   provisioner "local-exec" {
     command = <<-EOT
-        ansible-playbook -i hosts forti_config.yml
+        ansible-playbook fgconfig.yml
     EOT
   }
 }

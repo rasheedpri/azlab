@@ -7,7 +7,7 @@
     state: present
     router_static:
       device: "{{ item.device }}"
-      # distance: 10
+      distance: "{{ item.distance }}"
       dst: "{{ item.dst }}"
       dynamic_gateway: "{{ item.dyanmic_gateway }}"
       gateway: "{{ item.gateway }}"

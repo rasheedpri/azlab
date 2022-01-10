@@ -1,14 +1,14 @@
 
 vip:
-  - { name: WEB-SRV, mappedip: 10.10.0.140, port: 81, extip: 0.0.0.0, extintf: port1 }
-
+  - { name: WEB-SRV, mappedip: 10.10.0.140, port: 80, extip: 0.0.0.0, extintf: port1 }
+  
 route:
-  - { device: port1, dst: 0.0.0.0/0, src: 10.10.0.0/16, dyanmic_gateway: enable, gateway: 0.0.0.0 }
-  - { device: port2, dst: 10.10.0.0/16, src: 0.0.0.0/0, dyanmic_gateway: disable, gateway: 10.10.0.65 }         
+  - { device: port1, dst: 0.0.0.0/0, src: 10.10.0.0/16, dyanmic_gateway: enable, gateway: 0.0.0.0, distance: 1 }
+  - { device: port2, dst: 10.10.0.0/16, src: 0.0.0.0/0, dyanmic_gateway: disable, gateway: 10.10.0.65, distance: 1 }         
 
 fwpolicy:
   - { name: Allow_Inbound_WEB, srcintf: port1, dstintf: port2, srcaddr: all, dstaddr: WEB-SRV, action: accept, nat: enable, service: HTTP, policyid: 1  } 
   - { name: Allow_Outbound_WebTier, srcintf: port2, dstintf: port1, srcaddr: WEB-SUBNET, dstaddr: all, action: accept, nat: enable, service: ALL, policyid: 2  } 
 
 object:
-  - { name: WEB-SUBNET, interface: port2, subnet: 10.10.0.128/26 }
+  - { name: WEB-SUBNET, interface: port2, subnet: 10.10.0.0/16 }
