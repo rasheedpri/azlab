@@ -1,6 +1,6 @@
 
 resource "azurerm_network_interface" "nic" {
-  count               = var.count
+  count               = var.webvm_count
   name                = "${var.vm_name}${count.index + 1}-NIC"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -12,8 +12,7 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_virtual_machine" "websrv" {
-  count                         = var.count
-  depends_on                    = [local_file.apache_install, ]
+  count                         = var.webvm_count
   name                          = "${var.vm_name}${count.index + 1}"
   location                      = var.location
   resource_group_name           = var.resource_group_name

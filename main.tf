@@ -7,7 +7,7 @@ module "vnet" {
 }
 
 module "firewall" {
-  count               = "2"
+  fw_count            = "2"
   source              = "/home/cloud/azlab/modules/fgtvm"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -20,7 +20,7 @@ module "firewall" {
 
 module "websrv" {
   source              = "/home/cloud/azlab/modules/linuxvm"
-  count               = "2"
+  webvm_count         = "2"
   location            = var.location
   resource_group_name = var.resource_group_name
   address_prefixes    = "10.10.0.128/26"

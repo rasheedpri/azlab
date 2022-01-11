@@ -3,5 +3,5 @@ variable "resource_group_name" {}
 variable "address_prefixes" {}
 variable "vnet_name" {}
 variable "vm_name" {}
-variable "count" {}
+variable "webvm_count" {}
 variable "firewall_ip" {}

@@ -10,11 +10,11 @@
 
     - global
 
-    # - vip
+    - vip
 
-    # - route
+    - route
 
-    # - object
+    - object
 
-    # - fwpolicy
+    - fwpolicy
 
