@@ -7,14 +7,17 @@ module "vnet" {
 }
 
 module "firewall" {
-  fw_count            = "2"
-  source              = "/home/cloud/azlab/modules/fgtvm"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  fw_name             = var.fw_name
-  public_subnet       = var.public_subnet
-  private_subnet      = var.private_subnet
-  vnet_name           = module.vnet.vnet_name
+  fw_count             = "2"
+  source               = "/home/cloud/azlab/modules/fgtvm"
+  location             = var.location
+  resource_group_name  = var.resource_group_name
+  fw_name              = var.fw_name
+  public_subnet        = var.public_subnet
+  private_subnet       = var.private_subnet
+  private_lb_ipaddress = "10.10.0.100" 
+  vnet_name            = module.vnet.vnet_name
+  web_subnet           = var.web_subnet
+  web_lb_ip_ipaddress  = var.web_lb_ip_ipaddress
 }
 
 
@@ -23,10 +26,10 @@ module "websrv" {
   webvm_count         = "2"
   location            = var.location
   resource_group_name = var.resource_group_name
-  address_prefixes    = "10.10.0.128/26"
+  web_subnet          = var.web_subnet
   vnet_name           = module.vnet.vnet_name
   vm_name             = "AZUVNLABWEB00"
   firewall_ip         =  module.firewall.firewall_ip
   depends_on          = [module.firewall]
-
+  web_lb_ip_ipaddress = var.web_lb_ip_ipaddress
 }

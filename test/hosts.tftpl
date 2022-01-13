@@ -1,0 +1,6 @@
+[fortigate]
+%{ for index, i in ip ~}
+${vm}${index+1}  ansible_host=${i} ansible_user="admin" ansible_password="admin"
+%{ endfor ~}
+[fortigate:vars]
+ansible_network_os=fortinet.fortios.fortios

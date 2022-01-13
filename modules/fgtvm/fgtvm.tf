@@ -1,6 +1,6 @@
 # Fortigate Public IP Address
 
-resource "azurerm_public_ip" "fgtpip" {
+resource "azurerm_public_ip" "PublicIP" {
   count               = var.fw_count
   name                = format("%s-PIP", element(var.fw_name,count.index))
   location            = var.location
@@ -10,18 +10,16 @@ resource "azurerm_public_ip" "fgtpip" {
 
 }
 
-
-data "azurerm_public_ip" "fgtpip" {
+data "azurerm_public_ip" "PublicIP" {
   count               = var.fw_count
-  name                = element(azurerm_public_ip.fgtpip.*.name,count.index)
+  name                = element(azurerm_public_ip.PublicIP.*.name,count.index)
   resource_group_name = var.resource_group_name
-  depends_on          = [azurerm_virtual_machine.fgtvm,]
+  depends_on          = [azurerm_virtual_machine.fortigate_vm,]
 }
-
 
 # Fortigate Public Network Interface
 
-resource "azurerm_network_interface" "fgt_nic1" {
+resource "azurerm_network_interface" "public" {
   count               = var.fw_count
   name                = format("%s-NIC1", element(var.fw_name,count.index))
   location            = var.location
@@ -32,14 +30,14 @@ resource "azurerm_network_interface" "fgt_nic1" {
     name                          = format("%s-NIC1", element(var.fw_name,count.index))
     subnet_id                     = azurerm_subnet.public_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.fgtpip[count.index].id
+    public_ip_address_id          = azurerm_public_ip.PublicIP[count.index].id
   }
 
 }
 
 # Fortigate Private Network Interface
 
-resource "azurerm_network_interface" "fgt_nic2" {
+resource "azurerm_network_interface" "private" {
   count               = var.fw_count
   name                = format("%s-NIC2", element(var.fw_name,count.index))
   location            = var.location
@@ -56,15 +54,15 @@ resource "azurerm_network_interface" "fgt_nic2" {
 
 # Fortigate Virtual Machine
 
-resource "azurerm_virtual_machine" "fgtvm" {
+resource "azurerm_virtual_machine" "fortigate_vm" {
   count                        = var.fw_count
   name                         = element(var.fw_name,count.index)
   location                     = var.location
   resource_group_name          = var.resource_group_name
   vm_size                      = "Standard_B1ms"
-  network_interface_ids        = [azurerm_network_interface.fgt_nic1[count.index].id, 
-                                  azurerm_network_interface.fgt_nic2[count.index].id]
-  primary_network_interface_id = azurerm_network_interface.fgt_nic1[count.index].id
+  network_interface_ids        = [azurerm_network_interface.public[count.index].id, 
+                                  azurerm_network_interface.private[count.index].id]
+  primary_network_interface_id = azurerm_network_interface.public[count.index].id
   depends_on = [
     azurerm_managed_disk.fgtdisk
   ]
@@ -86,68 +84,52 @@ resource "azurerm_virtual_machine" "fgtvm" {
 
 resource "time_sleep" "wait_180_seconds" {
   create_duration = "180s"
-  depends_on = [azurerm_virtual_machine.fgtvm,]
+  depends_on = [azurerm_virtual_machine.fortigate_vm,]
 }
 
-# Generate bash script file
+# Generate bash script file to bootstrap FortiGate
 
 resource "local_file" "bootstrap" {
- count      = var.fw_count
- depends_on = [time_sleep.wait_180_seconds,azurerm_virtual_machine.fgtvm,]
- filename = "/home/cloud/azlab/bootstrap${count.index}.sh"
- content = <<EOF
-export fgt=${element(data.azurerm_public_ip.fgtpip.*.ip_address,count.index)}
-user=admin
-pwd=admin
-  echo "============================"
-  echo "Bootstraping Fortigate"
-  echo "============================"
-  {
-  echo $pwd;
-  echo $pwd;
-  echo "config system interface";
-  echo "edit port1";
-  echo "set allowaccess https http ssh ping";
-  echo "next"
-  echo "edit port2";
-  echo "set mode dhcp"
-  echo "set allowaccess ssh ping";
-  echo "end";
-  echo "config system global";
-  echo "set admin-port 8080";
-  echo "end"
-  echo "exit"
- } | ssh -o StrictHostKeyChecking=no admin@$fgt
-EOF
+    count       =  var.fw_count
+    content     =  templatefile("${path.cwd}/bootstrap.tftpl", {fortigate_ip = "${element(data.azurerm_public_ip.PublicIP.*.ip_address, count.index)}"})
+    filename    = "${path.cwd}/bootsrap${count.index + 1}.sh"
 }
 
+# Generate ansible inventory file
 
 resource "local_file" "ansible_inventory" {
- count = var.fw_count
- depends_on = [time_sleep.wait_180_seconds,azurerm_virtual_machine.fgtvm,]
- filename = "/home/cloud/azlab/hosts"
- content = <<EOF
- 
-[fortigate]
-${element(var.fw_name,0)} ansible_host=${element(data.azurerm_public_ip.fgtpip.*.ip_address,0)} ansible_user="admin" ansible_password="admin"
-${element(var.fw_name,0)} ansible_host=${element(data.azurerm_public_ip.fgtpip.*.ip_address,1)} ansible_user="admin" ansible_password="admin"
-[fortigate:vars]
-ansible_network_os=fortinet.fortios.fortios
-
-EOF
+    content     =  templatefile(
+                    "${path.cwd}/hosts.tftpl", {
+                     hostname = "AZUVNLABFGT00", fortigate_ip =  "${element(data.azurerm_public_ip.PublicIP.*.ip_address)}",                   
+                     })
+    filename    = "${path.cwd}/hosts.ini"
+    depends_on = [time_sleep.wait_180_seconds,azurerm_virtual_machine.fortigate_vm,]
 }
+
 
 
 resource "null_resource" "bootstrap" {
   count      = var.fw_count
   depends_on = [time_sleep.wait_180_seconds,local_file.bootstrap,]
+  
   provisioner "local-exec" {
     command = <<-EOT
-         chmod +x "/home/cloud/azlab/bootstrap${count.index}.sh"
-         (cd ~/azlab/ ; ./bootstrap${count.index}.sh)
+         chmod +x "${path.cwd}/bootsrap${count.index + 1}.sh"
+         (cd ${path.cwd} ; ./bootsrap${count.index + 1}.sh)
     EOT
   }
 }
+
+resource "local_file" "ansible_vars" {
+    content     =  templatefile(
+                   "${path.cwd}/.tftpl", {
+                    web_lb_ipaddress = "${var.web_lb_ip_ipaddress}",
+                    web_subnet       = "${var.web_subnet}"
+                    
+                    })
+    filename    = "${path.cwd}/bootsrap${count.index + 1}.sh"
+}
+
 
 
 resource "null_resource" "ansible_play" {

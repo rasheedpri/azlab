@@ -8,7 +8,7 @@ resource "azurerm_lb" "web_lb" {
     name                          = "AZLAB-N-WEB-LB-01"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = "10.10.0.140"
+    private_ip_address            = var.web_lb_ip_ipaddress
   }
 }
 

@@ -38,7 +38,6 @@ resource "azurerm_virtual_machine" "websrv" {
     admin_username = "azureuser"
     admin_password = "Mylab@1234$%"
     custom_data    = <<EOF
-    
     packages:
         - apache2
     runcmd:
