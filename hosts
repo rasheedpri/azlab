@@ -1,5 +1,0 @@
-[fortigate]
-${fortigate01} ansible_host=${fortigate01_ip} ansible_user="admin" ansible_password="admin"
-${fortigate02} ansible_host=${fortigate02_ip} ansible_user="admin" ansible_password="admin"
-[fortigate:vars]
-ansible_network_os=fortinet.fortios.fortios
