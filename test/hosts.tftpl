@@ -1,6 +1,22 @@
-[fortigate]
-%{ for index, i in ip ~}
-${vm}${index+1}  ansible_host=${i} ansible_user="admin" ansible_password="admin"
-%{ endfor ~}
-[fortigate:vars]
-ansible_network_os=fortinet.fortios.fortios
+export fgt=${ip}
+user=admin
+pwd=admin
+  echo "============================"
+  echo "Bootstraping FortiGate"
+  echo "============================"
+  {
+  echo $pwd;
+  echo $pwd;
+  echo "config system interface";
+  echo "edit port1";
+  echo "set allowaccess https http ssh ping";
+  echo "next"
+  echo "edit port2";
+  echo "set mode dhcp"
+  echo "set allowaccess ssh ping";
+  echo "end";
+  echo "config system global";
+  echo "set admin-port 8080";
+  echo "end"
+  echo "exit"
+ } | ssh -o StrictHostKeyChecking=no admin@$fgt

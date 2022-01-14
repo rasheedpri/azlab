@@ -15,3 +15,12 @@ variable "private_subnet" {
 variable "fw_name" {
   default = ["AZUVNLABFGT001", "AZUVNLABFGT002"]
 }
+
+variable "web_lb_ipaddress" {
+  default = "10.10.0.140"
+}
+
+variable  "web_subnet"  {
+  default = "10.10.0.128/26"
+}
+

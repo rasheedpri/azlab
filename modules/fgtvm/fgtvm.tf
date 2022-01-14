@@ -122,18 +122,17 @@ resource "null_resource" "bootstrap" {
 
 resource "local_file" "ansible_vars" {
     content     =  templatefile(
-                   "${path.cwd}/.tftpl", {
-                    web_lb_ipaddress = "${var.web_lb_ip_ipaddress}",
+                   "${path.cwd}/ansible.tftpl", {
+                    web_lb_ipaddress = "${var.web_lb_ipaddress}",
                     web_subnet       = "${var.web_subnet}"
                     
                     })
-    filename    = "${path.cwd}/bootsrap${count.index + 1}.sh"
+    filename    = "${path.cwd}/group_vars/fortigate.yml"
 }
 
 
 
 resource "null_resource" "ansible_play" {
-  count      = var.fw_count
   depends_on = [time_sleep.wait_180_seconds,local_file.ansible_inventory,]
   provisioner "local-exec" {
     command = <<-EOT

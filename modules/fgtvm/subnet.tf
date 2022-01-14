@@ -37,6 +37,8 @@ resource "azurerm_network_security_group" "private_subnet_nsg" {
 resource "azurerm_subnet_network_security_group_association" "public_nsg_attatch" {
   subnet_id                 = azurerm_subnet.public_subnet.id
   network_security_group_id = azurerm_network_security_group.public_subnet_nsg.id
+  depends_on                = [azurerm_network_security_group.public_subnet_nsg,
+                               azurerm_subnet.public_subnet,]
 }
 
 # FortiGate Private Subnet & NSG Association
@@ -44,6 +46,8 @@ resource "azurerm_subnet_network_security_group_association" "public_nsg_attatch
 resource "azurerm_subnet_network_security_group_association" "private_nsg_attatch" {
   subnet_id                 = azurerm_subnet.private_subnet.id
   network_security_group_id = azurerm_network_security_group.private_subnet_nsg.id
+  depends_on                = [azurerm_network_security_group.private_subnet_nsg,
+                               azurerm_subnet.private_subnet,]
 }
 
 # FortiGate Public Subnet NSG Rule

@@ -1,17 +1,17 @@
 #  Subnet
 
 resource "azurerm_subnet" "subnet" {
-  name                 = format("S-%s", replace(var.address_prefixes, "/", "-"))
+  name                 = format("S-%s", replace(var.web_subnet, "/", "-"))
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
-  address_prefixes     = [var.address_prefixes]
+  address_prefixes     = [var.web_subnet]
 }
 
 
 # Subnet NSG
 
 resource "azurerm_network_security_group" "subnet_nsg" {
-  name                = format("S-%s-NSG", replace(var.address_prefixes, "/", "-"))
+  name                = format("S-%s-NSG", replace(var.web_subnet, "/", "-"))
   location            = var.location
   resource_group_name = var.resource_group_name
 }
@@ -22,6 +22,8 @@ resource "azurerm_network_security_group" "subnet_nsg" {
 resource "azurerm_subnet_network_security_group_association" "nsg_attatch" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.subnet_nsg.id
+  depends_on                = [ azurerm_subnet_network_security_group_association" "nsg_attatch",
+                                azurerm_subnet.subnet,]
 }
 
 # User Defined Route (UDR) to route Internet-Outbound traffic to FortiGate
