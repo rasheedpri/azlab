@@ -22,14 +22,14 @@ resource "azurerm_network_security_group" "subnet_nsg" {
 resource "azurerm_subnet_network_security_group_association" "nsg_attatch" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.subnet_nsg.id
-  depends_on                = [ azurerm_subnet_network_security_group_association" "nsg_attatch",
+  depends_on                = [ azurerm_network_security_group.subnet_nsg,
                                 azurerm_subnet.subnet,]
 }
 
 # User Defined Route (UDR) to route Internet-Outbound traffic to FortiGate
 
 resource "azurerm_route_table" "udr" {
-  name                          = "web-outbound"
+  name                          = "WEB-Subnet-Outbound"
   location                      = var.location
   resource_group_name           = var.resource_group_name
   disable_bgp_route_propagation = false
@@ -47,6 +47,8 @@ resource "azurerm_route_table" "udr" {
 resource "azurerm_subnet_route_table_association" "udr_attach" {
   subnet_id      = azurerm_subnet.subnet.id
   route_table_id = azurerm_route_table.udr.id
+  depends_on     = [ azurerm_route_table.udr,
+                     azurerm_subnet.subnet,]
 }
 
 # Subnet NSG Rule
@@ -63,6 +65,7 @@ resource "azurerm_network_security_rule" "nsg_rule_out" {
   destination_address_prefix  = "*"
   resource_group_name         = var.resource_group_name
   network_security_group_name = azurerm_network_security_group.subnet_nsg.name
+  depends_on                = [ azurerm_network_security_group.subnet_nsg,]
 }
 
 resource "azurerm_network_security_rule" "nsg_rule_in" {
@@ -77,5 +80,6 @@ resource "azurerm_network_security_rule" "nsg_rule_in" {
   destination_address_prefix  = "*"
   resource_group_name         = var.resource_group_name
   network_security_group_name = azurerm_network_security_group.subnet_nsg.name
+  depends_on                  = [ azurerm_network_security_group.subnet_nsg,]
 }
 

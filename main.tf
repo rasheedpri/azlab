@@ -17,7 +17,7 @@ module "firewall" {
   private_lb_ipaddress = "10.10.0.100" 
   vnet_name            = module.vnet.vnet_name
   web_subnet           = var.web_subnet
-  web_lb_ip_ipaddress  = var.web_lb_ip_ipaddress
+  web_lb_ipaddress     = var.web_lb_ipaddress
 }
 
 
@@ -31,5 +31,5 @@ module "websrv" {
   vm_name             = "AZUVNLABWEB00"
   firewall_ip         =  module.firewall.firewall_ip
   depends_on          = [module.firewall]
-  web_lb_ip_ipaddress = var.web_lb_ip_ipaddress
+  web_lb_ipaddress    = var.web_lb_ipaddress
 }

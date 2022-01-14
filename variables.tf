@@ -2,7 +2,7 @@ variable "location" {
   default = "eastus"
 }
 variable "resource_group_name" {
-  default = "1-035fc531-playground-sandbox"
+  default = "1-929f7dbf-playground-sandbox"
 }
 
 variable "public_subnet" {

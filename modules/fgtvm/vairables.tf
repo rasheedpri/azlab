@@ -7,6 +7,8 @@ variable "resource_group_name" {}
 variable "fw_name" {}
 variable "fw_count" {}
 variable "private_lb_ipaddress" {}
+variable "web_subnet"   {}  
+variable "web_lb_ipaddress" {}
 
 # Subnet Variables
 variable "vnet_name" {}

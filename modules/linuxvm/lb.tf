@@ -8,7 +8,7 @@ resource "azurerm_lb" "web_lb" {
     name                          = "AZLAB-N-WEB-LB-01"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = var.web_lb_ip_ipaddress
+    private_ip_address            = var.web_lb_ipaddress
   }
 }
 
@@ -22,7 +22,8 @@ resource "azurerm_network_interface_backend_address_pool_association" "web_lb" {
   network_interface_id    = azurerm_network_interface.nic[count.index].id
   ip_configuration_name   = "${var.vm_name}${count.index + 1}-NIC"
   backend_address_pool_id = azurerm_lb_backend_address_pool.web_pool.id
-  depends_on              = [azurerm_virtual_machine.websrv, azurerm_network_interface.nic]
+  depends_on              = [ azurerm_network_interface.nic,azurerm_lb.web_lb,
+                             azurerm_lb_backend_address_pool.web_pool ]
 }
 
 resource "azurerm_lb_probe" "web_lb" {

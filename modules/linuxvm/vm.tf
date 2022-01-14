@@ -38,10 +38,14 @@ resource "azurerm_virtual_machine" "websrv" {
     admin_username = "azureuser"
     admin_password = "Mylab@1234$%"
     custom_data    = <<EOF
+    #cloud-config
     packages:
-        - apache2
+        - nginx
+        - postgresql
+        - postgresql-contrib
     runcmd:
-        - echo "<h1>Your Automation is Successfull - You are Connected to WEB-SRV-0${count.index + 1}</h1>" | sudo tee /var/www/html/index.html
+        - wget -P /var/www/html https://raw.githubusercontent.com/do-community/terraform-sample-digitalocean-architectures/master/01-minimal-web-db-stack/assets/index.html
+        - sed -i "s/CHANGE_ME/WEB-Server-${count.index +1}/" /var/www/html/index.html
     EOF
   }
   os_profile_linux_config {
